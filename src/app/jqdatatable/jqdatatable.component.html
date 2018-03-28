@@ -1,0 +1,56 @@
+<div class='tablecontainer'>
+
+    <table datatable class="hover" *ngIf='dtmodel != null' [dtTrigger]="_jqdatatableService.dtTrigger">
+      <thead>
+        <tr>
+          <td *ngFor="let th of dtmodel.headLabels">{{th}}</td>
+          <!-- <th style="width: 1%; white-space: nowrap">Ações</th> -->
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of dtmodel.bodyParseData; let itemIndex = index">
+          <td *ngFor="let prop of dtmodel.propertieName" style="width: 1%; white-space: nowrap">
+            {{ item[prop] }}
+          </td>
+          <!-- DATA -->
+          <!-- <td style="width: 1%; white-space: nowrap" class="actions"> -->
+            <!-- ACTIONS -->
+            <!-- <a class="actionbtn btn btn-small" (click)='get($event, itemIndex, item)'>
+              <i class="fas fa-search-plus"></i>
+            </a>
+            <a class="actionbtn btn btn-small" (click)='put($event, itemIndex, item)'>
+              <i class="far fa-edit"></i>
+            </a>
+            <a class="actionbtn btn btn-small" (click)='delete($event, itemIndex, item)'>
+              <i class="far fa-trash-alt"></i>
+            </a> -->
+            <!-- ACTIONS -->
+            <!-- BTN MORE "..." -->
+            <!-- <div class="btn-group open">
+              <a class="btn" data-toggle="dropdown">
+                <span class="fas fa-ellipsis-v"></span>
+              </a>
+              <ul class="dropdown-menu">
+                <li>
+                  <a (click)='get($event, itemIndex, item)'>
+                    <i class="icon-fixed-width fas fa-search-plus"></i> Info</a>
+                </li>
+                <hr>
+                <li>
+                  <a (click)='put($event, itemIndex, item)'>
+                    <i class="icon-fixed-width far fa-edit"></i> Edit</a>
+                </li>
+                <hr>
+                <li>
+                  <a (click)='delete($event, itemIndex, item)'>
+                    <i class="icon-fixed-width far fa-trash-alt"></i> Delete</a>
+                </li>
+              </ul>
+            </div> -->
+            <!-- BTN MORE "..." -->
+          <!-- </td> -->
+        </tr>
+      </tbody>
+    </table>
+  
+  </div>

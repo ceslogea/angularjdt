@@ -205,3 +205,32 @@ html > input[type="search"] {
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
 }
 
+::ng-deep .tablecontainer .actionbtn {
+    color: black !important;
+    transition: background-color .3s !important;
+    border-radius: 5px;
+    border: none !important;
+    line-height: 0.2 !important;
+    padding: 0.135rem 0.20rem;
+}
+
+
+::ng-deep .tablecontainer .actionbtn:hover {
+    background: #FFBF7A!important;
+    border: none !important;
+}
+
+/*
+   server-side-angular-way.component.css
+*/
+.no-data-available {
+    text-align: center;
+  }
+  
+  /*
+     src/styles.css (i.e. your global style)
+  */
+  .dataTables_empty {
+    display: none;
+  }
+  

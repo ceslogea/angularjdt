@@ -1,18 +1,23 @@
-import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-
-
+import { BrowserModule } from '@angular/platform-browser';
+import { HttpModule } from '@angular/http';
+import { Http, Response, RequestOptions, Headers } from '@angular/http';
+import { DataTablesModule } from 'angular-datatables';
 import { AppComponent } from './app.component';
-
+import { JqdatatableComponent } from './jqdatatable/jqdatatable.component';
+import { JqdatatableService } from './jqdatatable/jqdatatable.service';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    JqdatatableComponent,
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    HttpModule,
+    DataTablesModule,
   ],
-  providers: [],
-  bootstrap: [AppComponent]
+  providers: [JqdatatableService],
+  bootstrap: [ AppComponent ]
 })
-export class AppModule { }
+export class AppModule {}
