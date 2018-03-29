@@ -5,7 +5,9 @@ import { Http, Response, RequestOptions, Headers } from '@angular/http';
 import { DataTablesModule } from 'angular-datatables';
 import { AppComponent } from './app.component';
 import { JqdatatableComponent } from './jqdatatable/jqdatatable.component';
-import { JqdatatableService } from './jqdatatable/jqdatatable.service';
+import { HttpClientModule } from '@angular/common/http';
+import { NgProgressModule } from '@ngx-progressbar/core';
+import { NgProgressHttpModule } from '@ngx-progressbar/http';
 
 @NgModule({
   declarations: [
@@ -15,9 +17,13 @@ import { JqdatatableService } from './jqdatatable/jqdatatable.service';
   imports: [
     BrowserModule,
     HttpModule,
+    HttpClientModule,
+    NgProgressModule.forRoot(),
+    NgProgressHttpModule,
     DataTablesModule,
   ],
-  providers: [JqdatatableService],
+  providers: [
+  ],
   bootstrap: [ AppComponent ]
 })
 export class AppModule {}

@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, ViewC
 import { Http, Response } from '@angular/http';
 import { Subject } from 'rxjs/Subject';
 import { DataTableDirective } from "angular-datatables";
-import { JqdatatableService } from "./jqdatatable.service";
+import { NgProgressRef, NgProgressComponent } from "@ngx-progressbar/core";
 
 declare var $: any;
 
@@ -33,18 +33,33 @@ export class JqTableModel {
   bodyData: Array<any>;
   bodyParseData: Array<any>;
   dtOptions: any;
-
+  method: string;
+  url: string;
+  extractData: Subject<any>;
+  actions: boolean;
   /**
    * 
-   * @param thsNames 
-   * @param propsNames 
-   * @param body 
-   * @param dtOptionsCuston 
+   * @param binds binds de col / property
+   * @param url url do serviço
+   * @param dtOptionsCuston custon config do datatable
    */
-  constructor(binds: Array<JqTableModelBind>, body: Array<any>, dtOptionsCuston?: any) {
+  constructor(binds: Array<JqTableModelBind>, url: string, dtOptionsCuston?: any) {
 
+    if (dtOptionsCuston != null && dtOptionsCuston.actions) {
+      this.actions = true;
+      if (dtOptionsCuston.columns != null)
+        dtOptionsCuston.columns.push({ responsivePriority: -1, orderable: false })
+    }
+    this.url = url;
     this.headLabels = binds.map(r => r.header);
     this.propertieName = binds.map(r => r.propertieName);
+    this.dtOptions = {}
+
+    this.dtOptions = dtOptionsCuston;
+
+  }
+
+  setBody(body: any) {
     this.bodyData = body;
 
     this.bodyParseData = new Array();
@@ -55,8 +70,10 @@ export class JqTableModel {
       })
       this.bodyParseData.push(entry)
     })
+  }
 
-    this.dtOptions = dtOptionsCuston;
+  setActions() {
+
   }
 }
 
@@ -73,42 +90,80 @@ export class JqTableModel {
  * hs-jqdatatable
  */
 export class JqdatatableComponent implements OnChanges {
-  
+  public dtTrigger: Subject<any> = new Subject();
+  public dtOptions: any = {};
   @Input() dtmodel: JqTableModel;
-  @Output() get: EventEmitter<any> = new EventEmitter();
+
+  @Output() details: EventEmitter<any> = new EventEmitter();
+  @Output() edit: EventEmitter<any> = new EventEmitter();
+  @Output() delete: EventEmitter<any> = new EventEmitter();
+
   @Output() update: Subject<any> = new Subject();
-  
-  constructor(private http: Http, private _jqdatatableService: JqdatatableService) {
-    this._jqdatatableService.dtTrigger.next();
-  }
-  ngOnInit(): void {
-    this._jqdatatableService.dtTrigger.next();
+  @ViewChild(DataTableDirective) datatableElement: DataTableDirective;
+  @ViewChild('barOne') progressBar: NgProgressComponent;
+  constructor(private http: Http) {
     this.assiginGlobalConfig()
-}
+  }
+
+  ngOnInit(): void {
+  }
+
   assiginGlobalConfig() {
     $.extend(true, $.fn.dataTable.defaults, this.configPtBrLang());
   }
-  
-  retrieve(event, itemIndex, item) {
-    this.get.emit({ event, itemIndex, item });
-    
+
+  detailsFn(event, itemIndex, item) {
+    console.log('Event Emiter Details')
+    this.details.emit({ event, itemIndex, item });
   }
 
- 
-  
-  ngAfterViewInit(): void {
-    console.log('AfterViewInit')
-    this._jqdatatableService.dtTrigger.next();
+  editFn(event, itemIndex, item) {
+    this.edit.emit({ event, itemIndex, item });
   }
-  
+
+  deleteFn(event, itemIndex, item) {
+    this.delete.emit({ event, itemIndex, item });
+  }
+
+
+  reload() {
+    this.getData();
+  }
+
+  ngAfterViewInit(): void {
+    this.getData();
+  }
+
+  getData() {
+    this.progressBar.start();
+    this.http.get(this.dtmodel.url)
+      .map(this.extractData)
+      .subscribe(Result => {
+        this.dtmodel.setBody(Result);
+        console.log(this.dtmodel)
+        Object.assign(this.dtOptions, this.dtmodel.dtOptions);
+        if (this.dtmodel.actions) {
+
+        }
+        console.log(this.dtOptions)
+        console.log(this.dtmodel.dtOptions)
+        this.dtTrigger.next();
+        this.progressBar.complete();
+      })
+  }
   ngOnChanges(changes: SimpleChanges) {
     console.log('ngOnChanges')
-    this._jqdatatableService.dtTrigger.next();
   }
 
   configPtBrLang() {
+    let that = this;
+
     return {
+      processing: true,
       "lengthMenu": [[15, 25, 50, -1], [15, 25, 50, "Todos"]],
+      //"pagingType": "simple",
+      "pagingType": "simple_numbers",
+      // pagingType: 'numbers_no_ellipses',
       "oLanguage": {
         "sEmptyTable": "Nenhum registro encontrado",
         "sInfo": "Mostrando de _START_ até _END_ de _TOTAL_ registros",
@@ -155,18 +210,33 @@ export class JqdatatableComponent implements OnChanges {
             columns: [0, 1, 2, 5]
           }
         },
-        'colvis'
+        'colvis',
+        {
+          text: 'Reload (1)',
+          key: '1',
+          class: 'teste',
+          action: function (e, dt, node, config) {
+            that.reload();
+          }
+        }
       ],
-      processing: true,
       destroy: true,
       "columnDefs": [
         { "className": "dt-center", "targets": "_all" }
       ],
-      "initComplete": function(settings, json) {
+      "initComplete": function (settings, json) {
         // alert( 'DataTables has finished its initialisation.' );
       }
     };
   }
 
+  displayToConsole(datatableElement: DataTableDirective): void {
+    datatableElement.dtInstance.then((dtInstance: DataTables.Api) => console.log(dtInstance));
+  }
+
+  private extractData(res: Response) {
+    const body = res.json();
+    return body.Result || {};
+  }
 
 }

@@ -1,0 +1,150 @@
+<div class="container">
+
+    <app-header></app-header>
+  
+    <div class="grid">
+  
+      <div class="panel">
+        <ng-progress id="bar-one" #barOne spinnerPosition="left"></ng-progress>
+  
+        <div class="button">
+          <button (click)="barOne.start()">
+              <img [src]="play" />
+            </button>
+          <span>Start</span>
+        </div>
+  
+        <div class="button">
+          <button (click)="barOne.set(30)">
+              <img [src]="play" />
+            </button>
+          <span>Set(30)</span>
+        </div>
+  
+        <div class="button">
+          <button (click)="barOne.inc(15)">
+              <img [src]="play" />
+            </button>
+          <span>Inc(15)</span>
+        </div>
+  
+        <div class="button">
+          <button (click)="barOne.complete()">
+              <img [src]="play" />
+            </button>
+          <span>Complete</span>
+        </div>
+      </div>
+  
+      <div class="panel">
+        <ng-progress id="bar-two" #barTwo color="red" direction="rtl+"></ng-progress>
+  
+        <div class="button">
+          <button (click)="barTwo.start()">
+              <img [src]="play" />
+            </button>
+          <span>Start</span>
+        </div>
+  
+        <div class="button">
+          <button (click)="barTwo.set(30)">
+              <img [src]="play" />
+            </button>
+          <span>Set(30)</span>
+        </div>
+  
+        <div class="button">
+          <button (click)="barTwo.inc(15)">
+              <img [src]="play" />
+            </button>
+          <span>Inc(15)</span>
+        </div>
+  
+        <div class="button">
+          <button (click)="barTwo.complete()">
+              <img [src]="play" />
+            </button>
+          <span>Complete</span>
+        </div>
+      </div>
+    </div>
+  
+    <div class="foo">
+      <div class="button">
+          <button (click)="barOne.start();barTwo.start()">
+              <img [src]="play" />
+            </button>
+          <span>Start all</span>
+        </div>
+  
+        <div class="button">
+          <button (click)="barOne.complete();barTwo.complete()">
+              <img [src]="play" />
+            </button>
+          <span>Complete all</span>
+        </div>
+    </div>
+  </div>
+
+
+
+<div class='tablecontainer'>
+ 
+ 
+  <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="hover responsive">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>TypeDescription</th>
+        <th style="width: 1%; white-space: nowrap">Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of data; let itemIndex = index">
+        <!-- DATA -->
+        <td>{{ item.ID }}</td>
+        <td>{{ item.Name }}</td>
+        <td>{{ item.TypeDescription }}</td>
+        <!-- DATA -->
+        <td style="width: 1%; white-space: nowrap" class="actions">
+          <!-- ACTIONS -->
+          <a class="actionbtn btn btn-small" (click)='get($event, itemIndex, item)'>
+            <i class="fas fa-search-plus"></i>
+          </a>
+          <a class="actionbtn btn btn-small" (click)='put($event, itemIndex, item)'>
+            <i class="far fa-edit"></i>
+          </a>
+          <a class="actionbtn btn btn-small" (click)='delete($event, itemIndex, item)'>
+            <i class="far fa-trash-alt"></i>
+          </a>
+          <!-- ACTIONS -->
+          <!-- BTN MORE "..." -->
+          <div class="btn-group open">
+            <a class="btn" data-toggle="dropdown">
+              <span class="fas fa-ellipsis-v"></span>
+            </a>
+            <ul class="dropdown-menu">
+              <li>
+                <a (click)='get($event, itemIndex, item)'>
+                  <i class="icon-fixed-width fas fa-search-plus"></i> Info</a>
+              </li>
+              <hr>
+              <li>
+                <a (click)='put($event, itemIndex, item)'>
+                  <i class="icon-fixed-width far fa-edit"></i> Edit</a>
+              </li>
+              <hr>
+              <li>
+                <a (click)='delete($event, itemIndex, item)'>
+                  <i class="icon-fixed-width far fa-trash-alt"></i> Delete</a>
+              </li>
+            </ul>
+          </div>
+          <!-- BTN MORE "..." -->
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+</div>
