@@ -100,7 +100,8 @@ export class JqdatatableComponent implements OnChanges {
 
   @Output() update: Subject<any> = new Subject();
   @ViewChild(DataTableDirective) datatableElement: DataTableDirective;
-  @ViewChild('barOne') progressBar: NgProgressComponent;
+  @ViewChild('barOne') 
+  public progressBar: NgProgressComponent;
   constructor(private http: Http) {
     this.assiginGlobalConfig()
   }
@@ -142,17 +143,23 @@ export class JqdatatableComponent implements OnChanges {
         this.dtmodel.setBody(Result);
         console.log(this.dtmodel)
         Object.assign(this.dtOptions, this.dtmodel.dtOptions);
-        if (this.dtmodel.actions) {
-
-        }
-        console.log(this.dtOptions)
-        console.log(this.dtmodel.dtOptions)
         this.dtTrigger.next();
         this.progressBar.complete();
       })
   }
   ngOnChanges(changes: SimpleChanges) {
     console.log('ngOnChanges')
+    // this.progressBar.start();
+    this.http.get(this.dtmodel.url)
+      .map(this.extractData)
+      .subscribe(Result => {
+        this.dtmodel.setBody(Result);
+        console.log(this.dtmodel)
+        Object.assign(this.dtOptions, this.dtmodel.dtOptions);
+        this.dtTrigger.next();
+        // this.progressBar.complete();
+      })
+    this.dtTrigger.next();
   }
 
   configPtBrLang() {
@@ -188,38 +195,6 @@ export class JqdatatableComponent implements OnChanges {
           "sSortDescending": ": Ordenar colunas de forma descendente"
         }
       },
-      // Declare the use of the extension in the dom parameter
-      dom: 'Bfrtip',
-      // Configure the buttons
-      buttons: [
-        {
-          extend: 'copyHtml5',
-          exportOptions: {
-            columns: [0, ':visible']
-          }
-        },
-        {
-          extend: 'csvHtml5',
-          exportOptions: {
-            columns: [':visible']
-          }
-        },
-        {
-          extend: 'pdfFlash',
-          exportOptions: {
-            columns: [0, 1, 2, 5]
-          }
-        },
-        'colvis',
-        {
-          text: 'Reload (1)',
-          key: '1',
-          class: 'teste',
-          action: function (e, dt, node, config) {
-            that.reload();
-          }
-        }
-      ],
       destroy: true,
       "columnDefs": [
         { "className": "dt-center", "targets": "_all" }

@@ -239,12 +239,12 @@ html > input[type="search"] {
   // Set progress bar position on panel
 ::ng-deep {
     .tablecontainer ng-progress {
-      position: absolute;
+      position: relative;
       top: 0;
       left: 0;
       right: 0;
       .ng-progress-bar {
-        position: absolute;
+        position: relative;
       }
     }
   }

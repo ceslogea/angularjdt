@@ -31,7 +31,7 @@ export class AppComponent implements OnInit {
   }
 
   public loadDataTable1() {
-
+    let that = this;
     //https://datatables.net/
     let dtOptions = {
       actions: true,
@@ -56,9 +56,39 @@ export class AppComponent implements OnInit {
           { name: 'mobilel', width: 480 },
           { name: 'mobilep', width: 320 }
         ]
-      },
+      },// Declare the use of the extension in the dom parameter
+      dom: 'Bfrtip',
+      // Configure the buttons
+      buttons: [
+        {
+          extend: 'copyHtml5',
+          exportOptions: {
+            columns: [0, ':visible']
+          }
+        },
+        {
+          extend: 'csvHtml5',
+          exportOptions: {
+            columns: [':visible']
+          }
+        },
+        {
+          extend: 'pdfFlash',
+          exportOptions: {
+            columns: [0, 1, 2, 5]
+          }
+        },
+        'colvis',
+        {
+          text: 'Reload (1)',
+          key: '1',
+          class: 'teste',
+          action: function (e, dt, node, config) {
+            that.loadDataTable1();
+          }
+        }
+      ],
       scrollY: '50vh',
-      
       scrollCollapse: true
     };
 
@@ -69,6 +99,7 @@ export class AppComponent implements OnInit {
     binds.push(new JqTableModelBind('Group AD AzureID', 'GroupADAzureID'))
     binds.push(new JqTableModelBind('Type Description', 'TypeDescription'))
     binds.push(new JqTableModelBind('Identifier', 'Identifier'))
+    this.modeljq = null
     this.modeljq = new JqTableModel(binds, 'https://qadvafilemappingapi.azurewebsites.net/api/layouts/getmetadatainfolist?groupId=25', dtOptions)
   }
 
